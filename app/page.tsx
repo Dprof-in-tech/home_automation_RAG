@@ -1,103 +1,186 @@
-import Image from "next/image";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+import { useChat } from "@ai-sdk/react";
+import { Message } from "ai";
+import { Send } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+
+export const Loader = () => {
+  return (
+    <div className="flex items-center gap-1 h-5">
+      <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.3s]" />
+      <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.15s]" />
+      <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" />
+    </div>
+  );
+};
+
+export const PrompSuggestionsRow = ({ onClick }: { onClick: any }) => {
+  const prompts = [
+    "What is Home Automation?",
+    "Why automate your home?",
+    "How can i automate my home?",
+    "What are the benefits of home automation?",
+  ];
+
+  return (
+    <div className="flex flex-wrap gap-2 md:gap-4 items-center justify-center w-full">
+      {prompts.map((prompt, index) => {
+        return (
+          <div
+            key={`suggestion-${index}`}
+            className="relative max-w-fit flex flex-col items-start"
+          >
+            <button
+              className="bg-[#0078FE] text-white rounded-2xl px-4 py-3 text-[12px] md:text-sm text-left w-fit"
+              onClick={() => {
+                onClick(prompt);
+              }}
+            >
+              {prompt}
+            </button>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const {
+    input,
+    handleInputChange,
+    handleSubmit,
+    append,
+    isLoading,
+    messages,
+  } = useChat();
+  const Messages = !messages || messages.length === 0;
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+  const handlePrompt = (text: any) => {
+    const msg: Message = {
+      id: crypto.randomUUID(),
+      content: text,
+      role: "user",
+    };
+
+    append(msg);
+  };
+  return (
+    <div className="bg-black w-full min-h-screen h-full flex flex-col items-center justify-between gap-[2rem] px-8 py-4  md:py-[4rem]">
+      <section className="flex flex-col gap-auto justify-between h-fit">
+        <h1 className="text-2xl font-semibold text-center my-4">
+          Home Automation GPT
+        </h1>
+        {Messages ? (
+          <div className="mx-auto w-full text-center flex flex-col items-center px-4">
+            <p className="w-full md:max-w-1/2 mx-auto">
+              The Ultimate place for engineering freaks and DIY experts ! Ask
+              AUTOMATE anything about home automation and it will be sure to
+              give you the most up-to-date answers. We hope you enjoy!
+            </p>
+            <br />
+
+            <PrompSuggestionsRow onClick={handlePrompt} />
+          </div>
+        ) : (
+          <div className="md:max-w-[60%] mx-auto w-full px-4 relative flex flex-col gap-2 mt-4">
+            {messages.map((message) => {
+              const isUser = message.role === "user";
+
+              return (
+                <div
+                  key={message.id}
+                  className={`flex ${
+                    isUser ? "justify-end items-end" : "justify-start items-start"
+                  } w-full`}
+                >
+                  <div className={`flex flex-col ${
+                    isUser ? "justify-end items-end" : "justify-start"
+                  } w-fit`}>
+                    <div
+                      className={`${
+                        isUser ? "bg-[#0078FE]" : "bg-[#202020]"
+                      } text-white rounded-2xl px-4 py-3 text-sm text-left max-w-[80%] space-y-2`}
+                    >
+                      <ReactMarkdown
+                        components={{
+                          p: ({ ...props }) => (
+                            <p className="mb-2 leading-snug" {...props} />
+                          ),
+                          code: ({
+                            inline,
+                            children,
+                            ...props
+                          }: {
+                            inline?: boolean;
+                            children?: React.ReactNode;
+                          }) =>
+                            inline ? (
+                              <code
+                                className="bg-gray-700 px-1 py-0.5 rounded text-[0.85em]"
+                                {...props}
+                              >
+                                {children}
+                              </code>
+                            ) : (
+                              <pre
+                                className="bg-gray-800 p-3 rounded text-sm overflow-x-auto"
+                                {...props}
+                              >
+                                <code>{children}</code>
+                              </pre>
+                            ),
+                        }}
+                      >
+                        {message.content}
+                      </ReactMarkdown>
+                    </div>
+                    <div
+                      className={`flex gap-2 my-2 ${
+                        isUser ? "justify-end" : "justify-start"
+                      } w-full text-xs text-gray-400`}
+                    >
+                      <p>{message.role === "assistant" ? "NOVA" : "YOU"}</p>
+                      <p>
+                        {message?.createdAt
+                          ? new Date(message.createdAt)
+                              .toLocaleTimeString("en-US", {
+                                hour: "numeric",
+                                minute: "numeric",
+                                hour12: true,
+                              })
+                              .toLowerCase()
+                          : "Unknown time"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+
+            {isLoading && <Loader />}
+          </div>
+        )}
+      </section>
+      <form
+        onSubmit={handleSubmit}
+        className="relative flex items-center w-full justify-center self-end"
+      >
+        <input
+          type="text"
+          className="bg-transparent backdrop-blur-lg px-4 py-4 rounded-full border border-[#efefef] text-[#efefef] w-full md:w-7/12 mx-auto"
+          onChange={handleInputChange}
+          value={input}
+          placeholder="Question you want to ask?"
+        />
+        <button
+          type="submit"
+          className="absolute right-3 md:right-[21.5%] p-2 rounded-full border border-[#efefef] text-[#efefef]"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <Send size={22} />
+        </button>
+      </form>
     </div>
   );
 }
