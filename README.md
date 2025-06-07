@@ -32,8 +32,8 @@ A intelligent chatbot powered by Retrieval-Augmented Generation (RAG) that provi
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/dprof-in-tech/home_automation_RAG-chatbot.git
-   cd home_automation_RAG-chatbot
+   git clone https://github.com/dprof-in-tech/home_automation_RAG.git
+   cd home_automation_RAG
    ```
 
 2. **Install dependencies**
@@ -169,7 +169,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 - 📧 Email: amaechiisaac450@gmail.com
-- 💬 Issues: [GitHub Issues](https://github.com/dprof-in-teche/home_automation_RAG-chatbot/issues)
+- 💬 Issues: [GitHub Issues](https://github.com/dprof-in-teche/home_automation_RAG/issues)
 
 ---
 
