@@ -5,7 +5,7 @@ import { Message } from "ai";
 import { Send } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
-export const Loader = () => {
+const Loader = () => {
   return (
     <div className="flex items-center gap-1 h-5">
       <span className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.3s]" />
@@ -15,7 +15,7 @@ export const Loader = () => {
   );
 };
 
-export const PrompSuggestionsRow = ({ onClick }: { onClick: any }) => {
+ const PrompSuggestionsRow = ({ onClick }: { onClick: any }) => {
   const prompts = [
     "What is Home Automation?",
     "Why automate your home?",
