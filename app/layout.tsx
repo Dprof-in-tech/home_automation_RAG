@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Home Automation GPT",
-  description: "The place to go for all your hoem automation questions",
+  description: "The place to go for all your home automation and IOT questions",
 };
 
 export default function RootLayout({
